@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "echo \"No tests specified\"",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.0"
+  }
+}
