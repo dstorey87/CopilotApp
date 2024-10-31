@@ -1,0 +1,17 @@
+# Exclude node_modules and build outputs
+node_modules
+build
+dist
+
+# Exclude logs and environment files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+*.env
+
+# Exclude system and IDE files
+.DS_Store
+Thumbs.db
+.idea
+.vscode

@@ -1,0 +1,17 @@
+{
+    "trend_analysis": {
+        "default": "gpt-neo",
+        "options": [
+            "gpt-neo",
+            "google_trends"
+        ]
+    },
+    "content_generation": {
+        "default": "t5",
+        "options": [
+            "t5",
+            "gpt2",
+            "davinci"
+        ]
+    }
+}

@@ -1,0 +1,60 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    # Other configurations
+    environment:
+      - NODE_ENV=production
+    networks:
+      - copilotapp-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      cache_from:
+        - backend:latest
+    image: copilotapp-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - ai_worker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - copilotapp-network
+
+  ai_worker:
+    build:
+      context: ./ai_worker
+      dockerfile: Dockerfile
+      cache_from:
+        - ai_worker:latest
+    image: copilotapp-ai_worker
+    env_file:
+      - .env
+    # Remove the following lines to break the cycle
+    # depends_on:
+    #   - backend
+    networks:
+      - copilotapp-network
+
+  admin_panel:
+    build: ./admin_panel
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    # Other configurations
+    networks:
+      - copilotapp-network
+
+networks:
+  copilotapp-network:
+    driver: bridge
