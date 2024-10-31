@@ -1,0 +1,47 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+        ports:
+          - 3000:3000
+          - 4000:4000
+          - 5000:5000
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies and check for sync
+        run: |
+          cd frontend
+          npm ci
+          git diff --exit-code package-lock.json
+          cd ../admin_panel
+          npm ci
+          git diff --exit-code package-lock.json
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: copilotapp-frontend, copilotapp-admin_panel, copilotapp-backend, copilotapp-ai_worker
+
+      - name: Run Docker Compose
+        run: |
+          docker-compose up -d --build
